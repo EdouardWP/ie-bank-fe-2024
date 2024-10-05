@@ -27,6 +27,7 @@
                 <th scope="col">Account Number</th>
                 <th scope="col">Account Balance</th>
                 <th scope="col">Account Currency</th>
+                <th scope="col">Account Country</th> 
                 <th scope="col">Account Status</th>
                 <th scope="col">Actions</th>
               </tr>
@@ -37,6 +38,7 @@
                 <td>{{ account.account_number }}</td>
                 <td>{{ account.balance }}</td>
                 <td>{{ account.currency }}</td>
+                <td>{{ account.country }}</td>
                 <td>
                   <span
                     v-if="account.status == 'Active'"
@@ -117,30 +119,62 @@
       <!-- End of Modal for Create Account-->
       <!-- Start of Modal for Edit Account-->
       <b-modal
-        ref="editAccountModal"
-        id="edit-account-modal"
-        title="Edit the account"
-        hide-backdrop
-        hide-footer
-      >
-        <b-form @submit="onSubmitUpdate" class="w-100">
-          <b-form-group
-            id="form-edit-name-group"
-            label="Account Name:"
-            label-for="form-edit-name-input"
-          >
-            <b-form-input
-              id="form-edit-name-input"
-              type="text"
-              v-model="editAccountForm.name"
-              placeholder="Account Name"
-              required
-            >
-            </b-form-input>
-          </b-form-group>
-          <b-button type="submit" variant="outline-info">Update</b-button>
-        </b-form>
-      </b-modal>
+  ref="addAccountModal"
+  id="account-modal"
+  title="Create a new account"
+  hide-backdrop
+  hide-footer
+>
+  <b-form @submit="onSubmit" class="w-100">
+    <!-- Account Name Field -->
+    <b-form-group
+      id="form-name-group"
+      label="Account Name:"
+      label-for="form-name-input"
+    >
+      <b-form-input
+        id="form-name-input"
+        type="text"
+        v-model="createAccountForm.name"
+        placeholder="Account Name"
+        required
+      ></b-form-input>
+    </b-form-group>
+
+    <!-- Currency Field -->
+    <b-form-group
+      id="form-currency-group"
+      label="Currency:"
+      label-for="form-currency-input"
+    >
+      <b-form-input
+        id="form-currency-input"
+        type="text"
+        v-model="createAccountForm.currency"
+        placeholder="$ or €"
+        required
+      ></b-form-input>
+    </b-form-group>
+
+    <!-- Country Field (Add this block) -->
+    <b-form-group
+      id="form-country-group"
+      label="Country:"
+      label-for="form-country-input"
+    >
+      <b-form-input
+        id="form-country-input"
+        type="text"
+        v-model="createAccountForm.country"
+        placeholder="Enter Country"
+        required
+      ></b-form-input>
+    </b-form-group>
+
+    <!-- Submit Button -->
+    <b-button type="submit" variant="outline-info">Submit</b-button>
+  </b-form>
+</b-modal>
       <!-- End of Modal for Edit Account-->
     </div>
   </div>
@@ -151,20 +185,21 @@ import axios from "axios";
 export default {
   name: "AppAccounts",
   data() {
-    return {
-      accounts: [],
-      createAccountForm: {
-        name: "",
-        currency: "",
-      },
-      editAccountForm: {
-        id: "",
-        name: "",
-      },
-      showMessage: false,
-      message: "",
-    };
-  },
+  return {
+    accounts: [],
+    createAccountForm: {
+      name: "",
+      currency: "",
+      country: "",  // Add country field here
+    },
+    editAccountForm: {
+      id: "",
+      name: "",
+    },
+    showMessage: false,
+    message: "",
+  };
+},
   methods: {
     /***************************************************
      * RESTful requests
@@ -257,6 +292,7 @@ export default {
     initForm() {
       this.createAccountForm.name = "";
       this.createAccountForm.currency = "";
+      this.createAccountForm.country = "";  
       this.editAccountForm.id = "";
       this.editAccountForm.name = "";
     },
@@ -283,6 +319,19 @@ export default {
       this.RESTupdateAccount(payload, this.editAccountForm.id);
       this.initForm();
     },
+
+    onSubmit(e) {
+      e.preventDefault(); // Prevent default form submit behavior
+      this.$refs.addAccountModal.hide(); // Hide the modal when submitted
+      const payload = {
+        name: this.createAccountForm.name,
+        currency: this.createAccountForm.currency,
+        country: this.createAccountForm.country,  // Include country in the payload
+      };
+      this.RESTcreateAccount(payload);
+      this.initForm();
+    },
+
 
     // Handle edit button
     editAccount(account) {
