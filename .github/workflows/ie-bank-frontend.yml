@@ -8,8 +8,8 @@ on:
 
 
 env:
-  FRONTEND_WEBAPP_DEV: ewidmaierrui-fe-dev
-  FRONTEND_WEBAPP_UAT: ewidmaierrui-fe-uat
+  FRONTEND_WEBAPP_DEV: ewidmaierrui3-fe-dev
+  FRONTEND_WEBAPP_UAT: ewidmaierrui3-fe-uat
 
 jobs:
   build-dev:
