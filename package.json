@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:dev": "vue-cli-service build --dest dist-dev --mode development",
+    "build:dev": "vue-cli-service build --mode development",
     "build:uat": "vue-cli-service build --mode uat"
   },
   "dependencies": {
